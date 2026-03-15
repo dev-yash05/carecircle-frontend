@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Clinical calm — stone + teal palette */
+    --background: 60 9% 98%;       /* stone-50 */
+    --foreground: 24 10% 10%;      /* stone-900 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 24 10% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 24 10% 10%;
+
+    --primary: 175 84% 32%;        /* teal-600 */
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 60 5% 96%;        /* stone-100 */
+    --secondary-foreground: 24 10% 10%;
+
+    --muted: 60 5% 96%;
+    --muted-foreground: 24 5% 45%;
+
+    --accent: 60 5% 96%;
+    --accent-foreground: 24 10% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 20 6% 90%;
+    --input: 20 6% 90%;
+    --ring: 175 84% 32%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 24 10% 10%;
+    --foreground: 60 9% 98%;
+
+    --card: 24 10% 14%;
+    --card-foreground: 60 9% 98%;
+
+    --popover: 24 10% 14%;
+    --popover-foreground: 60 9% 98%;
+
+    --primary: 172 66% 50%;        /* teal-400 */
+    --primary-foreground: 24 10% 10%;
+
+    --secondary: 24 6% 18%;
+    --secondary-foreground: 60 9% 98%;
+
+    --muted: 24 6% 18%;
+    --muted-foreground: 24 5% 64%;
+
+    --accent: 24 6% 18%;
+    --accent-foreground: 60 9% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 24 6% 22%;
+    --input: 24 6% 22%;
+    --ring: 172 66% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
