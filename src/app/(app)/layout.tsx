@@ -1,6 +1,7 @@
 "use client"
 
 import { AppShell } from "@/components/layout/app-shell"
+import { WebSocketProvider } from "@/components/providers/WebSocketProvider"
 import { useMe } from "@/lib/hooks/useMe"
 
 export default function AppLayout({
@@ -10,5 +11,10 @@ export default function AppLayout({
 }) {
   useMe()
 
-  return <AppShell>{children}</AppShell>;
+  return (
+    <AppShell>
+      <WebSocketProvider />
+      {children}
+    </AppShell>
+  );
 }

@@ -1,3 +1,15 @@
-export default function VitalsPage() {
-  return <div className="rounded-xl border border-dashed border-border p-12 text-center"><p className="text-muted-foreground text-sm">Sprint 5 — Vitals chart</p></div>;
+/// <reference types="react/canary" />
+"use client";
+
+import * as React from "react";
+import { VitalsPanel } from "@/components/vitals/VitalsPanel";
+
+export default function VitalsPage({
+  params,
+}: {
+  params: Promise<{ patientId: string }>;
+}) {
+  const { patientId } = React.use(params);
+
+  return <VitalsPanel patientId={patientId} />;
 }

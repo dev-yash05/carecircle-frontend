@@ -1,4 +1,4 @@
-import { apiClient } from "./client";
+import { ApiError, apiClient } from "./client";
 
 export interface User {
   id: string;
@@ -16,13 +16,44 @@ export interface User {
 }
 
 /** Get the currently authenticated user */
-export function getMe(): Promise<User> {
-  return apiClient<User>("/api/users/me");
+export async function getMe(): Promise<User> {
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const endpoints = ["/api/v1/auth/me", "/api/users/me"];
+
+  let lastStatus = 401;
+
+  for (const endpoint of endpoints) {
+    const res = await fetch(`${apiBase}${endpoint}`, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.ok) {
+      return res.json();
+    }
+
+    lastStatus = res.status;
+    if (res.status === 404) {
+      continue;
+    }
+  }
+
+  throw new ApiError(lastStatus, "Unauthorized");
 }
 
 /** Logout — clears the HttpOnly cookie on the backend */
-export function logout(): Promise<void> {
-  return apiClient<void>("/api/auth/logout", { method: "POST" });
+export async function logout(): Promise<void> {
+  try {
+    await apiClient<void>("/api/v1/auth/logout", { method: "POST" });
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      await apiClient<void>("/api/auth/logout", { method: "POST" });
+      return;
+    }
+    throw error;
+  }
 }
 
 /** Redirect browser to Spring Boot's Google OAuth2 entry point */

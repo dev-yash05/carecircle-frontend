@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getMe } from "@/lib/api/auth";
 import { useAuthStore } from "@/lib/stores/authStore";
 
 export default function AuthCallbackPage() {
@@ -11,16 +12,10 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     // After Google OAuth, Spring Boot sets the HttpOnly cookie and redirects here.
-    // We fetch /api/users/me to populate the auth store, then redirect to dashboard.
+    // We fetch current user to populate auth store, then redirect to dashboard.
     const redirect = searchParams.get("redirect") || "/dashboard";
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/api/users/me`, {
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Not authenticated");
-        return res.json();
-      })
+    getMe()
       .then((user) => {
         setUser(user);
         router.replace(redirect);

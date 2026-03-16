@@ -1,3 +1,15 @@
-export default function DosesPage() {
-  return <div className="rounded-xl border border-dashed border-border p-12 text-center"><p className="text-muted-foreground text-sm">Sprint 4 — Dose timeline</p></div>;
+/// <reference types="react/canary" />
+"use client";
+
+import * as React from "react";
+import { DoseTimeline } from "@/components/doses/DoseTimeline";
+
+export default function DosesPage({
+  params,
+}: {
+  params: Promise<{ patientId: string }>;
+}) {
+  const { patientId } = React.use(params);
+
+  return <DoseTimeline patientId={patientId} />;
 }

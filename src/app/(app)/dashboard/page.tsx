@@ -1,7 +1,8 @@
 "use client";
 
-import { RoleGuard } from "@/components/layout/role-guard";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
+import { AnomalyAlertBanner } from "@/components/dashboard/AnomalyAlertBanner";
+import { PendingDosesWidget } from "@/components/dashboard/PendingDosesWidget";
 import { useAuthStore } from "@/lib/stores/authStore";
 
 export default function DashboardPage() {
@@ -15,34 +16,16 @@ export default function DashboardPage() {
         <p className="mt-2 text-muted-foreground">Welcome back, {firstName}.</p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Sprint 1 & 2 verification</CardTitle>
-          <CardDescription>Auth hydration and shell status from the current client session.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>User id: {user?.id ?? "Not loaded"}</p>
-          <p>Role: {user?.role ?? "Not loaded"}</p>
-          <p>Email: {user?.email ?? "Not loaded"}</p>
-        </CardContent>
-      </Card>
+      <AnomalyAlertBanner />
 
-      <RoleGuard allowed={["ADMIN", "SUPER_ADMIN"]}>
-        <Card className="border-primary/30 bg-primary/10">
-          <CardHeader>
-            <CardTitle className="text-primary">Admin tools</CardTitle>
-            <CardDescription className="text-primary/80">
-              This card is only visible to ADMIN and SUPER_ADMIN roles.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </RoleGuard>
-
-      <Card className="border-dashed">
-        <CardContent className="py-10 text-center text-sm text-muted-foreground">
-          Dashboard widgets land here in upcoming sprints.
-        </CardContent>
-      </Card>
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <PendingDosesWidget />
+        </div>
+        <div className="lg:col-span-1">
+          <ActivityFeed />
+        </div>
+      </div>
     </div>
   );
 }
