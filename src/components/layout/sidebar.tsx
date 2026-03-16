@@ -48,6 +48,22 @@ const NAV_ITEMS: NavItem[] = [
     ),
     roles: ["ADMIN", "SUPER_ADMIN"],
   },
+  {
+    label: "All Orgs",
+    href: "/superadmin",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 22V4c0-.6.4-1 1-1h6c.6 0 1 .4 1 1v18"/><path d="M6 12H4a1 1 0 0 0-1 1v8h3"/><path d="M20 12h-2"/><path d="M14 12h6a1 1 0 0 1 1 1v8h-7"/><path d="M10 7h.01"/><path d="M10 11h.01"/><path d="M10 15h.01"/></svg>
+    ),
+    roles: ["SUPER_ADMIN"],
+  },
+  {
+    label: "All Users",
+    href: "/superadmin/users",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
+    ),
+    roles: ["SUPER_ADMIN"],
+  },
 ]
 
 /* ---------- component ------------------------------------------------- */

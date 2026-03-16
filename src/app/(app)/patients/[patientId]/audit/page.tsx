@@ -1,3 +1,14 @@
-export default function AuditPage() {
-  return <div className="rounded-xl border border-dashed border-border p-12 text-center"><p className="text-muted-foreground text-sm">Sprint 7 — Audit log</p></div>;
+"use client";
+
+import * as React from "react";
+import { AuditLogTable } from "@/components/audit/AuditLogTable";
+
+export default function AuditPage({
+  params,
+}: {
+  params: Promise<{ patientId: string }>;
+}) {
+  const { patientId } = React.use(params);
+
+  return <AuditLogTable patientId={patientId} />;
 }
