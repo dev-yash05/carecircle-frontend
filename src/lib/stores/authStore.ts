@@ -23,7 +23,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   isFamilyAdmin: () => {
     const role = get().user?.role;
-    return role === "FAMILY_ADMIN" || role === "SUPER_ADMIN";
+    return role === "ADMIN" || role === "FAMILY_ADMIN" || role === "SUPER_ADMIN";
   },
 
   isSuperAdmin: () => get().user?.role === "SUPER_ADMIN",

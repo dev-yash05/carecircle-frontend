@@ -6,6 +6,9 @@ export default function LoginPage() {
   return (
     <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
       <div className="mb-8 text-center">
+        <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+          C
+        </div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Welcome to CareCircle
         </h1>
@@ -37,7 +40,7 @@ export default function LoginPage() {
             fill="#EA4335"
           />
         </svg>
-        Sign in with Google
+        Continue with Google
       </button>
 
       <p className="mt-6 text-center text-xs text-muted-foreground">

@@ -5,7 +5,14 @@ export interface User {
   email: string;
   name: string;
   avatarUrl: string | null;
-  role: "MEMBER" | "FAMILY_ADMIN" | "SUPER_ADMIN";
+  organizationId?: string | null;
+  role:
+    | "VIEWER"
+    | "CAREGIVER"
+    | "ADMIN"
+    | "SUPER_ADMIN"
+    | "MEMBER"
+    | "FAMILY_ADMIN";
 }
 
 /** Get the currently authenticated user */
