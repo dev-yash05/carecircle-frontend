@@ -181,18 +181,18 @@ All CSS variables are defined in `src/app/globals.css`. Use Tailwind semantic to
 - ✅ **Sprint 1** — Auth flow, fetch wrapper, Zustand store, middleware, login page, auth/callback
 - ✅ **Sprint 2** — Design system (CSS vars, theme), AppShell, Sidebar, Topbar, RoleGuard, all UI primitives
 - ✅ **Sprint 3** — Patient list + paginated cards + PatientForm + patient detail layout + 6-tab shell
+- ✅ **Sprint 4** — Dose timeline, MarkDoseDialog, optimistic updates, 409 conflict handling
+- ✅ **Sprint 5** — Vitals Recharts chart, RecordVitalForm, anomaly dot highlighting, LatestVitalsSummary
+- ✅ **Sprint 6** — STOMP WebSocket hook, WebSocketProvider, dashboardStore, AnomalyAlertBanner, PendingDosesWidget, ActivityFeed
+- ✅ **Sprint 7** — Team management, medication scheduling (CRON picker), audit log table
+- ✅ **Sprint 8** — PDF report download, SuperAdmin OrgGrid + UserTable
+- ✅ **Sprint 9** — Security headers (CSP/Permissions-Policy), error.tsx boundary, not-found.tsx, loading.tsx skeletons, Playwright E2E setup + 4 test suites
 
 ## Active sprint
-**Sprint 2 — verify and run** (all code is written, agent must install, fix, and boot)
+**Sprint 10 — CI/CD & deployment**
 
 ## Upcoming
-- Sprint 4 — Dose timeline + optimistic mark/skip + 409 handling
-- Sprint 5 — Vitals Recharts + RecordVitalForm
-- Sprint 6 — WebSocket STOMP hook + Dashboard widgets
-- Sprint 7 — Team management + medication scheduling (CRON picker) + audit log
-- Sprint 8 — PDF report + SuperAdmin panel
-- Sprint 9 — Security headers + error boundaries + Playwright E2E
-- Sprint 10 — CI/CD + deployment
+- Sprint 10 — GitHub Actions CI, Docker, Vercel/Railway deploy, env var management, prod smoke tests
 
 ---
 

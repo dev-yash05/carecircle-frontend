@@ -1,8 +1,12 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { redirectToGoogleLogin } from "@/lib/api/auth";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
+
   return (
     <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
       <div className="mb-8 text-center">
@@ -15,6 +19,11 @@ export default function LoginPage() {
         <p className="mt-2 text-sm text-muted-foreground">
           Manage your family&apos;s health in one place
         </p>
+        {from ? (
+          <p className="mt-2 text-xs text-muted-foreground">
+            Sign in to return to your page.
+          </p>
+        ) : null}
       </div>
 
       <button
@@ -49,3 +58,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
