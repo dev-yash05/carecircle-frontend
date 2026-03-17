@@ -50,9 +50,13 @@ export async function logout(): Promise<void> {
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       await apiClient<void>("/api/auth/logout", { method: "POST" });
-      return;
+    } else {
+      throw error;
     }
-    throw error;
+  }
+
+  if (typeof window !== "undefined") {
+    window.location.reload();
   }
 }
 

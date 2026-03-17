@@ -94,7 +94,7 @@ export default function PatientsPage() {
       </div>
 
       {patientsQuery.isLoading ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
             <Skeleton key={index} className="h-44 rounded-xl" />
           ))}
@@ -116,14 +116,14 @@ export default function PatientsPage() {
       ) : null}
 
       {!patientsQuery.isLoading && filteredPatients.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
           {filteredPatients.map((patient) => (
             <PatientCard key={patient.id} patient={patient} />
           ))}
         </div>
       ) : null}
 
-      <div className="flex items-center justify-between rounded-lg border p-3">
+      <div className="flex items-center justify-between rounded-2xl border border-border/90 bg-card p-3">
         <Button variant="outline" onClick={() => setPage((prev) => Math.max(0, prev - 1))} disabled={page === 0}>
           Previous
         </Button>

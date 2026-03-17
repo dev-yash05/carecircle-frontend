@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/auth/callback"];
+const PUBLIC_EXACT_PATHS = ["/"];
+const PUBLIC_PATH_PREFIXES = ["/login", "/auth/callback"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public routes
-  if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
+  if (
+    PUBLIC_EXACT_PATHS.includes(pathname) ||
+    PUBLIC_PATH_PREFIXES.some((p) => pathname.startsWith(p))
+  ) {
     return NextResponse.next();
   }
 

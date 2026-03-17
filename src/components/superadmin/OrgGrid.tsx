@@ -62,7 +62,7 @@ export function OrgGrid({ onTotalChange }: { onTotalChange?: (total: number) => 
   return (
     <div className="space-y-4">
       {orgsQuery.isLoading ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
           {Array.from({ length: 6 }).map((_, index) => (
             <Skeleton key={`org-skeleton-${index}`} className="h-48 rounded-xl" />
           ))}
@@ -76,17 +76,20 @@ export function OrgGrid({ onTotalChange }: { onTotalChange?: (total: number) => 
       ) : null}
 
       {!orgsQuery.isLoading && orgs.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
           {orgs.map((org) => (
-            <Card key={org.id} className={!org.active ? "opacity-60" : undefined}>
-              <CardContent className="space-y-4 p-5">
+            <Card key={org.id} className={[
+              "h-full border-border/90",
+              !org.active ? "opacity-60" : "",
+            ].join(" ")}>
+              <CardContent className="space-y-4 p-5 pt-4 md:p-6 md:pt-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                       <Building2 className="h-5 w-5" />
                     </div>
                     <div className="space-y-1">
-                      <p className="max-w-[180px] truncate font-semibold text-foreground">{org.name}</p>
+                      <p className="max-w-[220px] truncate text-[1.05rem] font-semibold text-foreground">{org.name}</p>
                       {planBadge(org.plan)}
                     </div>
                   </div>
@@ -107,7 +110,7 @@ export function OrgGrid({ onTotalChange }: { onTotalChange?: (total: number) => 
                 </div>
 
                 {org.active ? (
-                  <Button variant="outline" className="w-full border-destructive text-destructive hover:bg-destructive/10" onClick={() => setTarget(org)}>
+                  <Button variant="outline" className="mt-2 w-full border-destructive text-destructive hover:bg-destructive/10" onClick={() => setTarget(org)}>
                     Deactivate org
                   </Button>
                 ) : null}

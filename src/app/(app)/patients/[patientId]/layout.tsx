@@ -53,15 +53,15 @@ export default function PatientDetailLayout({
       {patientQuery.isLoading || !patient ? (
         <Skeleton className="h-44 rounded-xl" />
       ) : (
-        <Card>
-          <CardContent className="space-y-4 p-6">
+        <Card className="border-border/90">
+          <CardContent className="space-y-4 p-4 sm:p-5">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/15 text-lg font-semibold text-primary">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-lg font-semibold text-primary">
                   {patient.name.slice(0, 1).toUpperCase()}
                 </div>
                 <div>
-                  <h1 className="text-2xl font-semibold text-foreground">{patient.name}</h1>
+                  <h1 className="text-xl font-semibold text-foreground sm:text-2xl">{patient.name}</h1>
                   <p className="text-sm text-muted-foreground">{getAge(patient.dateOfBirth)} years old</p>
                 </div>
               </div>

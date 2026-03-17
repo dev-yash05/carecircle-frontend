@@ -12,9 +12,9 @@ export default function AppLayout({
   useMe()
 
   return (
-    <AppShell>
+    <>
       <WebSocketProvider />
-      {children}
-    </AppShell>
+      <AppShell>{children}</AppShell>
+    </>
   );
 }

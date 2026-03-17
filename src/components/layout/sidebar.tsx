@@ -11,14 +11,14 @@ import { Badge } from "@/components/ui/badge"
 
 /* ---------- nav items ------------------------------------------------- */
 
-interface NavItem {
+export interface NavItem {
   label: string
   href: string
   icon: React.ReactNode
   roles?: string[]       // visible to these roles; undefined = all
 }
 
-const NAV_ITEMS: NavItem[] = [
+export const NAV_ITEMS: NavItem[] = [
   {
     label: "Dashboard",
     href: "/dashboard",
@@ -64,6 +64,14 @@ const NAV_ITEMS: NavItem[] = [
     ),
     roles: ["SUPER_ADMIN"],
   },
+  {
+    label: "Team Admin",
+    href: "/superadmin/team",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
+    ),
+    roles: ["SUPER_ADMIN"],
+  },
 ]
 
 /* ---------- component ------------------------------------------------- */
@@ -77,29 +85,34 @@ export function Sidebar() {
   )
 
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col border-r bg-card">
+    <aside className="hidden h-dvh w-[var(--sidebar-width)] shrink-0 flex-col border-r border-border/80 bg-card/85 backdrop-blur lg:flex">
       {/* brand */}
-      <div className="flex h-16 items-center gap-2 px-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+      <div className="flex h-[76px] items-center gap-3 px-5">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-sm">
           C
         </div>
-        <span className="text-xl font-bold tracking-tight text-primary">CareCircle</span>
+        <div>
+          <p className="text-[26px] font-bold leading-none tracking-tight text-foreground">CareCircle</p>
+          <p className="mt-1 text-xs font-medium text-muted-foreground">Caregiver Hub</p>
+        </div>
       </div>
 
       <Separator />
 
       {/* nav links */}
-      <nav className="flex-1 space-y-1 px-2 py-4">
+      <nav className="flex-1 space-y-2 px-3 py-4">
         {visibleItems.map((item) => {
-          const active = pathname.startsWith(item.href)
+          const active = item.href === "/superadmin"
+            ? pathname === "/superadmin"
+            : pathname.startsWith(item.href)
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-colors [&_svg]:h-5 [&_svg]:w-5 [&_svg]:shrink-0",
                 active
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-primary text-primary-foreground shadow-[0_8px_20px_hsl(var(--primary)/0.3)]"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
@@ -114,8 +127,8 @@ export function Sidebar() {
 
       {/* user footer */}
       {user && (
-        <div className="flex items-center gap-3 p-4">
-          <Avatar className="h-8 w-8">
+        <div className="m-4 flex items-center gap-3 rounded-2xl border border-border/70 bg-accent/60 p-3">
+          <Avatar className="h-10 w-10">
             <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
             <AvatarFallback>
               {user.name?.charAt(0)?.toUpperCase() ?? "?"}
@@ -123,7 +136,7 @@ export function Sidebar() {
           </Avatar>
           <div className="flex-1 truncate">
             <p className="truncate text-sm font-medium">{user.name}</p>
-            <div className="mt-1 flex items-center gap-2">
+            <div className="mt-1.5 flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
               <Badge variant="outline" className="text-[10px]">
                 {user.role.replace("_", " ")}

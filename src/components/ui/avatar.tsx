@@ -22,15 +22,23 @@ Avatar.displayName = "Avatar"
 const AvatarImage = React.forwardRef<
   HTMLImageElement,
   React.ImgHTMLAttributes<HTMLImageElement>
->(({ className, ...props }, ref) => (
-  // eslint-disable-next-line @next/next/no-img-element
-  <img
-    ref={ref}
-    className={cn("aspect-square h-full w-full", className)}
-    alt=""
-    {...props}
-  />
-))
+>(({ className, src, ...props }, ref) => {
+  if (!src) return null
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      ref={ref}
+      src={src}
+      className={cn("absolute inset-0 z-10 aspect-square h-full w-full object-cover", className)}
+      alt=""
+      onError={(event) => {
+        event.currentTarget.style.display = "none"
+      }}
+      {...props}
+    />
+  )
+})
 AvatarImage.displayName = "AvatarImage"
 
 const AvatarFallback = React.forwardRef<
@@ -40,7 +48,7 @@ const AvatarFallback = React.forwardRef<
   <span
     ref={ref}
     className={cn(
-      "flex h-full w-full items-center justify-center rounded-full bg-muted text-sm font-medium",
+      "absolute inset-0 flex h-full w-full items-center justify-center rounded-full bg-muted text-sm font-medium",
       className
     )}
     {...props}
