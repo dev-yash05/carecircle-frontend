@@ -46,7 +46,7 @@ export function TeamTable() {
   const usersQuery = useAllUsers(page, 20);
   const deactivateMutation = useDeactivateUser();
 
-  const users = usersQuery.data?.content ?? [];
+  const users = useMemo(() => usersQuery.data?.content ?? [], [usersQuery.data?.content]);
   const totalPages = Math.max(1, usersQuery.data?.totalPages ?? 1);
 
   const filteredUsers = useMemo(() => {

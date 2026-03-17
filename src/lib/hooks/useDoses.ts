@@ -40,6 +40,74 @@ const doseKeys = {
     [...doseKeys.lists(), orgId, patientId, page, status ?? "all"] as const,
 };
 
+function pickFirst<T>(...values: Array<T | null | undefined>): T | undefined {
+  for (const value of values) {
+    if (value !== undefined && value !== null) return value;
+  }
+  return undefined;
+}
+
+function normalizeStatus(value: unknown): DoseStatus {
+  const normalized = String(value ?? "PENDING").toUpperCase();
+  if (normalized === "TAKEN" || normalized === "SKIPPED" || normalized === "MISSED") {
+    return normalized;
+  }
+  return "PENDING";
+}
+
+function normalizeDose(raw: Record<string, unknown>): DoseEvent {
+  return {
+    id: String(pickFirst(raw.id, raw.doseEventId, raw.dose_event_id, raw.eventId, raw.event_id) ?? ""),
+    medicationName: String(pickFirst(raw.medicationName, raw.medication_name, raw.medication) ?? "Medication"),
+    dosage: String(pickFirst(raw.dosage, raw.dose, raw.strength) ?? "-"),
+    scheduledAt: String(pickFirst(raw.scheduledAt, raw.scheduled_at, raw.time, raw.scheduledFor, raw.scheduled_for) ?? ""),
+    status: normalizeStatus(pickFirst(raw.status, raw.state)),
+    notes: (pickFirst(raw.notes, raw.note, raw.comment) as string | null | undefined) ?? null,
+    markedByName: (pickFirst(raw.markedByName, raw.marked_by_name, raw.markedBy) as string | null | undefined) ?? null,
+    markedAt: (pickFirst(raw.markedAt, raw.marked_at) as string | null | undefined) ?? null,
+  };
+}
+
+function toPaginatedDoses(
+  data: unknown,
+  page: number,
+  size: number,
+  status?: DoseStatus,
+): PaginatedResponse<DoseEvent> {
+  const source = (data as Record<string, unknown>) ?? {};
+  const rawList = Array.isArray(data)
+    ? data
+    : (pickFirst(source.content, source.items, source.data, source.results) as unknown[] | undefined) ?? [];
+
+  const normalized = rawList
+    .filter((item): item is Record<string, unknown> => Boolean(item && typeof item === "object"))
+    .map((item) => normalizeDose(item))
+    .filter((item) => (status ? item.status === status : true));
+
+  if (Array.isArray(data)) {
+    return {
+      content: normalized,
+      totalElements: normalized.length,
+      totalPages: normalized.length === 0 ? 1 : Math.ceil(normalized.length / size),
+      number: page,
+      size,
+    };
+  }
+
+  const totalElementsRaw = pickFirst(source.totalElements, source.total_elements, source.total, source.count);
+  const totalPagesRaw = pickFirst(source.totalPages, source.total_pages);
+  const numberRaw = pickFirst(source.number, source.page, source.pageNumber, source.page_number);
+  const sizeRaw = pickFirst(source.size, source.pageSize, source.page_size);
+
+  return {
+    content: normalized,
+    totalElements: Number(totalElementsRaw ?? normalized.length),
+    totalPages: Number(totalPagesRaw ?? 1),
+    number: Number(numberRaw ?? page),
+    size: Number(sizeRaw ?? size),
+  };
+}
+
 async function getDoses(
   orgId: string,
   patientId: string,
@@ -56,9 +124,32 @@ async function getDoses(
     query.set("status", status);
   }
 
-  return apiClient<PaginatedResponse<DoseEvent>>(
-    `/api/v1/organizations/${orgId}/patients/${patientId}/doses?${query.toString()}`,
-  );
+  const queryString = query.toString();
+  const endpoints = [
+    `/api/v1/organizations/${orgId}/patients/${patientId}/doses?${queryString}`,
+    `/api/v1/organizations/${orgId}/doses?patientId=${patientId}&${queryString}`,
+    `/api/v1/organizations/${orgId}/doses/patient/${patientId}?${queryString}`,
+  ];
+
+  for (const endpoint of endpoints) {
+    try {
+      const data = await apiClient<unknown>(endpoint);
+      return toPaginatedDoses(data, page, size, status);
+    } catch (error) {
+      if (error instanceof ApiError && [404, 405, 501].includes(error.status)) {
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  return {
+    content: [],
+    totalElements: 0,
+    totalPages: 1,
+    number: page,
+    size,
+  };
 }
 
 async function markDose(
@@ -90,6 +181,7 @@ export function useDoses(
     queryFn: () => getDoses(orgId as string, patientId as string, page, status),
     enabled: Boolean(orgId && patientId),
     staleTime: 60_000,
+    refetchOnMount: "always",
     placeholderData: keepPreviousData,
     refetchInterval: 30_000,
   });

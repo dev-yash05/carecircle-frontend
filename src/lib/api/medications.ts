@@ -18,6 +18,33 @@ interface MedicationPayload {
   [key: string]: unknown;
 }
 
+function toBackendMedicationPayload(payload: MedicationCreateInput): Record<string, unknown> {
+  const medicationName = payload.name.trim();
+  const cronExpression = payload.schedule.trim();
+  const dosage = payload.dosage.trim();
+  const timezone = payload.timezone.trim();
+  const startDate = payload.startDate;
+  const endDate = payload.endDate?.trim() || undefined;
+  const instructions = payload.instructions?.trim() || undefined;
+
+  return {
+    patientId: payload.patientId,
+    patient_id: payload.patientId,
+    medicationName,
+    medication_name: medicationName,
+    name: medicationName,
+    dosage,
+    cronExpression,
+    cron_expression: cronExpression,
+    schedule: cronExpression,
+    timezone,
+    startDate,
+    start_date: startDate,
+    ...(endDate ? { endDate, end_date: endDate } : {}),
+    ...(instructions ? { instructions, notes: instructions } : {}),
+  };
+}
+
 function pickFirst<T>(...values: Array<T | null | undefined>): T | undefined {
   for (const value of values) {
     if (value !== undefined && value !== null) return value;
@@ -52,7 +79,7 @@ export async function getMedications(orgId: string, patientId: string): Promise<
 export async function createMedication(orgId: string, payload: MedicationCreateInput): Promise<Medication> {
   const data = await apiClient<MedicationPayload>(`/api/v1/organizations/${orgId}/medications`, {
     method: "POST",
-    body: JSON.stringify(payload),
+    body: JSON.stringify(toBackendMedicationPayload(payload)),
   });
 
   return toMedication(data);

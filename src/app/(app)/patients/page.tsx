@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import { ApiError } from "@/lib/api/client";
 import { useAuthStore } from "@/lib/stores/authStore";
 import { useCreatePatient, usePatients } from "@/lib/hooks/usePatients";
+import type { PatientCreateInput } from "@/lib/schemas/patient.schema";
 import { RoleGuard } from "@/components/layout/role-guard";
 import { PatientCard } from "@/components/patients/PatientCard";
 import { PatientForm } from "@/components/patients/PatientForm";
@@ -37,7 +38,7 @@ export default function PatientsPage() {
 
   const totalElements = patientsQuery.data?.totalElements ?? 0;
   const totalPages = Math.max(1, patientsQuery.data?.totalPages ?? 1);
-  const patients = patientsQuery.data?.content ?? [];
+  const patients = useMemo(() => patientsQuery.data?.content ?? [], [patientsQuery.data?.content]);
 
   const filteredPatients = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -45,7 +46,7 @@ export default function PatientsPage() {
     return patients.filter((patient) => patient.name.toLowerCase().includes(term));
   }, [patients, search]);
 
-  async function handleCreate(values: any) {
+  async function handleCreate(values: PatientCreateInput) {
     try {
       await createPatient.mutateAsync(values);
       setDialogOpen(false);

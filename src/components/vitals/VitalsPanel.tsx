@@ -2,10 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { ApiError } from "@/lib/api/client";
-import { type VitalReading } from "@/lib/api/vitals";
+import { type BloodPressureValue, type SingleValue, type VitalReading } from "@/lib/api/vitals";
 import { useRecordVital, useVitals } from "@/lib/hooks/useVitals";
 import { VITAL_DEFAULT_UNITS, type VitalCreateInput, type VitalType } from "@/lib/schemas/vital.schema";
-import { useAuthStore } from "@/lib/stores/authStore";
 import { RoleGuard } from "@/components/layout/role-guard";
 import { RecordVitalForm } from "@/components/vitals/RecordVitalForm";
 import { VitalsChart } from "@/components/vitals/VitalsChart";
@@ -32,24 +31,25 @@ const tabs: Array<{ label: string; value: VitalType }> = [
   { label: "Weight", value: "WEIGHT" },
 ];
 
-function formatVitalValue(type: VitalType, readingValue: any) {
+function formatVitalValue(type: VitalType, readingValue: VitalReading["readingValue"]) {
   if (type === "BLOOD_PRESSURE") {
-    return `${readingValue.systolic}/${readingValue.diastolic} ${VITAL_DEFAULT_UNITS.BLOOD_PRESSURE}`;
+    const bp = readingValue as BloodPressureValue;
+    return `${bp.systolic}/${bp.diastolic} ${VITAL_DEFAULT_UNITS.BLOOD_PRESSURE}`;
   }
-  return `${readingValue.value} ${VITAL_DEFAULT_UNITS[type]}`;
+  const single = readingValue as SingleValue;
+  return `${single.value} ${VITAL_DEFAULT_UNITS[type]}`;
 }
 
 export function VitalsPanel({ patientId }: { patientId: string }) {
   const [activeType, setActiveType] = useState<VitalType>("BLOOD_PRESSURE");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const user = useAuthStore((state) => state.user);
   const { toast } = useToast();
 
   const vitalsQuery = useVitals(patientId, activeType);
   const recordVital = useRecordVital(patientId);
 
-  const readings = vitalsQuery.data?.content ?? [];
+  const readings = useMemo(() => vitalsQuery.data?.content ?? [], [vitalsQuery.data?.content]);
   const anomalies = useMemo(
     () => readings.filter((reading) => reading.isAnomalous).length,
     [readings],

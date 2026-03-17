@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { VitalReading } from "@/lib/api/vitals";
+import type { BloodPressureValue, SingleValue, VitalReading } from "@/lib/api/vitals";
 import type { VitalType } from "@/lib/schemas/vital.schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -30,11 +30,13 @@ interface VitalsChartProps {
 }
 
 function extractChartValues(type: VitalType, reading: VitalReading) {
-  const value = reading.readingValue as any;
+  const value = reading.readingValue;
   if (type === "BLOOD_PRESSURE") {
-    return { primary: value.systolic, secondary: value.diastolic };
+    const bloodPressure = value as BloodPressureValue;
+    return { primary: bloodPressure.systolic, secondary: bloodPressure.diastolic };
   }
-  return { primary: value.value, secondary: undefined };
+  const singleValue = value as SingleValue;
+  return { primary: singleValue.value, secondary: undefined };
 }
 
 function chartTitle(type: VitalType) {
@@ -55,14 +57,14 @@ function friendlyType(type: VitalType) {
   return "Weight";
 }
 
-function AnomalousDot(props: DotProps & { payload?: any }) {
+function AnomalousDot(props: DotProps & { payload?: ChartPoint }) {
   if (!props.payload?.isAnomalous || props.cx == null || props.cy == null) return null;
   return (
     <circle cx={props.cx} cy={props.cy} r={5} fill="#ef4444" stroke="#fecaca" strokeWidth={2} />
   );
 }
 
-function AnomalousDotSecondary(props: DotProps & { payload?: any }) {
+function AnomalousDotSecondary(props: DotProps & { payload?: ChartPoint }) {
   if (!props.payload?.isAnomalous || props.cx == null || props.cy == null) return null;
   return (
     <circle cx={props.cx} cy={props.cy} r={5} fill="#ef4444" stroke="#fecaca" strokeWidth={2} />

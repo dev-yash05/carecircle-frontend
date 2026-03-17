@@ -1,7 +1,5 @@
 "use client"
 
-import * as React from "react"
-
 /* ------------------------------------------------------------------
  * useToast – thin wrapper around sonner's toast() so callers can
  * import from "@/components/ui/use-toast" if they prefer the

@@ -34,6 +34,7 @@ export function useCreateMedication(patientId: string | undefined) {
     onSuccess: async () => {
       if (!orgId || !patientId) return;
       await queryClient.invalidateQueries({ queryKey: medicationKeys.list(orgId, patientId) });
+      await queryClient.invalidateQueries({ queryKey: ["doses"] });
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });

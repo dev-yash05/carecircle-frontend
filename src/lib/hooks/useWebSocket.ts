@@ -3,10 +3,9 @@
 import { Client } from "@stomp/stompjs";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
+import SockJS from "sockjs-client";
 import { useAuthStore } from "@/lib/stores/authStore";
 import { useDashboardStore } from "@/lib/stores/dashboardStore";
-
-const SockJS = require("sockjs-client");
 
 export interface DashboardMessage {
   type: string;

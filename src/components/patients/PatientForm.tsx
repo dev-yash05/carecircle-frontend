@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,7 +38,7 @@ export function PatientForm({
     watch,
     formState: { errors, isSubmitting },
   } = useForm<PatientCreateInput>({
-    resolver: zodResolver(schema) as any,
+    resolver: zodResolver(schema) as Resolver<PatientCreateInput>,
     defaultValues: {
       name: "",
       dateOfBirth: "",

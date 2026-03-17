@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { VitalCreateSchema, VITAL_DEFAULT_UNITS, VitalTypeValues, type VitalCreateInput, type VitalType } from "@/lib/schemas/vital.schema";
+import { useForm, type Resolver } from "react-hook-form";
+import { VitalCreateSchema, VITAL_DEFAULT_UNITS, type VitalCreateInput, type VitalType } from "@/lib/schemas/vital.schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,17 @@ import { Textarea } from "@/components/ui/textarea";
 interface RecordVitalFormProps {
   onSubmit: (payload: VitalCreateInput) => Promise<void>;
 }
+
+type ReadingValueErrors = Partial<Record<"systolic" | "diastolic" | "value", { message?: string }>>;
+
+const RECORDABLE_VITAL_TYPES: VitalType[] = [
+  "BLOOD_PRESSURE",
+  "BLOOD_SUGAR",
+  "SPO2",
+  "TEMPERATURE",
+  "HEART_RATE",
+  "WEIGHT",
+];
 
 const PLACEHOLDERS: Record<VitalType, string> = {
   BLOOD_PRESSURE: "120 / 80",
@@ -41,11 +52,11 @@ export function RecordVitalForm({ onSubmit }: RecordVitalFormProps) {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<VitalCreateInput>({
-    resolver: zodResolver(VitalCreateSchema) as any,
+    resolver: zodResolver(VitalCreateSchema) as Resolver<VitalCreateInput>,
     defaultValues: {
       vitalType: "BLOOD_PRESSURE",
       unit: VITAL_DEFAULT_UNITS.BLOOD_PRESSURE,
-      readingValue: { systolic: 0, diastolic: 0 } as any,
+      readingValue: { systolic: 0, diastolic: 0 },
       notes: "",
     },
   });
@@ -57,15 +68,26 @@ export function RecordVitalForm({ onSubmit }: RecordVitalFormProps) {
   }, [setValue, type]);
 
   function handleTypeChange(typeValue: VitalType) {
+    const nextValues: VitalCreateInput = typeValue === "BLOOD_PRESSURE"
+      ? {
+          vitalType: "BLOOD_PRESSURE",
+          unit: VITAL_DEFAULT_UNITS.BLOOD_PRESSURE,
+          readingValue: { systolic: 0, diastolic: 0 },
+          notes: "",
+        }
+      : {
+          vitalType: typeValue,
+          unit: VITAL_DEFAULT_UNITS[typeValue],
+          readingValue: { value: 0 },
+          notes: "",
+        };
+
     reset({
-      vitalType: typeValue,
-      unit: VITAL_DEFAULT_UNITS[typeValue],
-      readingValue: (typeValue === "BLOOD_PRESSURE"
-        ? { systolic: 0, diastolic: 0 }
-        : { value: 0 }) as any,
-      notes: "",
+      ...nextValues,
     });
   }
+
+  const readingErrors = errors.readingValue as unknown as ReadingValueErrors | undefined;
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit(async (values) => onSubmit(values))}>
@@ -76,7 +98,7 @@ export function RecordVitalForm({ onSubmit }: RecordVitalFormProps) {
           value={type}
           onChange={(event) => handleTypeChange(event.target.value as VitalType)}
         >
-          {VitalTypeValues.map((vitalType) => (
+          {RECORDABLE_VITAL_TYPES.map((vitalType) => (
             <option key={vitalType} value={vitalType}>
               {friendlyType(vitalType)}
             </option>
@@ -92,10 +114,10 @@ export function RecordVitalForm({ onSubmit }: RecordVitalFormProps) {
               id="systolic"
               type="number"
               placeholder="120"
-              {...register("readingValue.systolic" as any, { valueAsNumber: true })}
+              {...register("readingValue.systolic", { valueAsNumber: true })}
             />
-            {(errors as any)?.readingValue?.systolic ? (
-              <p className="text-sm text-destructive">{(errors as any).readingValue.systolic.message}</p>
+            {readingErrors?.systolic?.message ? (
+              <p className="text-sm text-destructive">{readingErrors.systolic.message}</p>
             ) : null}
           </div>
           <div className="space-y-2">
@@ -104,10 +126,10 @@ export function RecordVitalForm({ onSubmit }: RecordVitalFormProps) {
               id="diastolic"
               type="number"
               placeholder="80"
-              {...register("readingValue.diastolic" as any, { valueAsNumber: true })}
+              {...register("readingValue.diastolic", { valueAsNumber: true })}
             />
-            {(errors as any)?.readingValue?.diastolic ? (
-              <p className="text-sm text-destructive">{(errors as any).readingValue.diastolic.message}</p>
+            {readingErrors?.diastolic?.message ? (
+              <p className="text-sm text-destructive">{readingErrors.diastolic.message}</p>
             ) : null}
           </div>
         </div>
@@ -121,10 +143,10 @@ export function RecordVitalForm({ onSubmit }: RecordVitalFormProps) {
             type="number"
             step={type === "TEMPERATURE" ? "0.1" : "1"}
             placeholder={PLACEHOLDERS[type]}
-            {...register("readingValue.value" as any, { valueAsNumber: true })}
+            {...register("readingValue.value", { valueAsNumber: true })}
           />
-          {(errors as any)?.readingValue?.value ? (
-            <p className="text-sm text-destructive">{(errors as any).readingValue.value.message}</p>
+          {readingErrors?.value?.message ? (
+            <p className="text-sm text-destructive">{readingErrors.value.message}</p>
           ) : null}
         </div>
       )}

@@ -3,6 +3,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import type { BloodPressureValue, VitalReading } from "@/lib/api/vitals";
 import { useAuthStore } from "@/lib/stores/authStore";
 import { usePatient } from "@/lib/hooks/usePatients";
 import { useDoses } from "@/lib/hooks/useDoses";
@@ -11,6 +12,10 @@ import type { VitalType } from "@/lib/schemas/vital.schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+
+function isBloodPressureValue(value: VitalReading["readingValue"]): value is BloodPressureValue {
+  return typeof value === "object" && value !== null && "systolic" in value && "diastolic" in value;
+}
 
 function PendingDosesSummary({ patientId }: { patientId: string }) {
   const { data } = useDoses(patientId, 0, "PENDING");
@@ -42,17 +47,23 @@ function PendingDosesSummary({ patientId }: { patientId: string }) {
   );
 }
 
-function formatVitalValue(type: VitalType, readingValue: any) {
+function formatVitalValue(type: VitalType, readingValue: VitalReading["readingValue"]) {
   if (type === "BLOOD_PRESSURE") {
-    return `${readingValue.systolic}/${readingValue.diastolic} mmHg`;
+    if (isBloodPressureValue(readingValue)) {
+      return `${readingValue.systolic}/${readingValue.diastolic} mmHg`;
+    }
+    return "-/- mmHg";
   }
-  if (type === "BLOOD_SUGAR") {
+  if ("value" in readingValue && type === "BLOOD_SUGAR") {
     return `${readingValue.value} mg/dL`;
   }
-  if (type === "SPO2") {
+  if ("value" in readingValue && type === "SPO2") {
     return `${readingValue.value} %`;
   }
-  return `${readingValue.value}`;
+  if ("value" in readingValue) {
+    return `${readingValue.value}`;
+  }
+  return "-";
 }
 
 function LatestVitalsSummary({ patientId }: { patientId: string }) {
@@ -60,7 +71,7 @@ function LatestVitalsSummary({ patientId }: { patientId: string }) {
   const bs = useVitals(patientId, "BLOOD_SUGAR");
   const spo2 = useVitals(patientId, "SPO2");
 
-  const cards: Array<{ label: string; type: VitalType; latest?: any }> = [
+  const cards: Array<{ label: string; type: VitalType; latest?: VitalReading }> = [
     { label: "Blood Pressure", type: "BLOOD_PRESSURE", latest: bp.data?.content?.[0] },
     { label: "Blood Sugar", type: "BLOOD_SUGAR", latest: bs.data?.content?.[0] },
     { label: "SpO2", type: "SPO2", latest: spo2.data?.content?.[0] },
@@ -82,7 +93,7 @@ function LatestVitalsSummary({ patientId }: { patientId: string }) {
               {latest ? (
                 <div className="mt-2 flex items-center gap-2">
                   <p className={latest.isAnomalous ? "text-lg font-semibold text-destructive" : "text-lg font-semibold text-foreground"}>
-                    {formatVitalValue(type, latest!.readingValue)}
+                    {formatVitalValue(type, latest.readingValue)}
                   </p>
                   {latest.isAnomalous ? <Badge variant="destructive">!</Badge> : null}
                 </div>

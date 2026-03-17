@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { redirectToGoogleLogin } from "@/lib/api/auth";
 
-export default function LoginPage() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const from = searchParams.get("from");
 
@@ -56,6 +57,14 @@ export default function LoginPage() {
         By signing in you agree to our Terms of Service and Privacy Policy.
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="rounded-2xl border border-border bg-card p-8 shadow-sm" />}>
+      <LoginContent />
+    </Suspense>
   );
 }
 
