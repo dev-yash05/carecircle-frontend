@@ -31,11 +31,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />
 
-        <main className="mx-auto min-h-0 w-full max-w-screen-2xl flex-1 overflow-y-auto px-4 pb-24 pt-7 md:px-6 md:pb-8 md:pt-10">
+        <main className="mx-auto min-h-0 w-full max-w-screen-2xl flex-1 overflow-y-auto px-4 pb-24 pt-7 md:px-6 md:pb-8 md:pt-10 animate-fade-in">
           {children}
         </main>
 
-        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-card/95 px-3 py-2 backdrop-blur lg:hidden">
+        {/* Mobile bottom tab bar */}
+        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-card/80 backdrop-blur-xl px-3 py-2 lg:hidden">
           <div className="mx-auto grid max-w-xl grid-cols-4 gap-1">
             {mobileItems.map((item) => {
               const active = item.href === "/superadmin"
@@ -47,10 +48,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={[
-                    "flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-[11px] font-semibold transition-colors [&_svg]:h-5 [&_svg]:w-5",
+                    "flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-2 text-[11px] font-semibold",
+                    "transition-all duration-200 [&_svg]:h-5 [&_svg]:w-5",
                     active
-                      ? "bg-primary/12 text-primary"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                      ? "bg-primary/12 text-primary scale-105"
+                      : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
                   ].join(" ")}
                 >
                   {item.icon}

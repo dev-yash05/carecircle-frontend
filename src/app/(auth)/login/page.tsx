@@ -9,19 +9,20 @@ function LoginContent() {
   const from = searchParams.get("from");
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+    <div className="glass-card rounded-3xl border border-border/50 p-8 shadow-2xl animate-scale-in">
       <div className="mb-8 text-center">
-        <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+        {/* Animated logo */}
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-lg font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-transform duration-300 hover:scale-110">
           C
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground animate-fade-in" style={{ animationDelay: "0.15s" }}>
           Welcome to CareCircle
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: "0.25s" }}>
           Manage your family&apos;s health in one place
         </p>
         {from ? (
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-2 text-xs text-muted-foreground animate-fade-in" style={{ animationDelay: "0.35s" }}>
             Sign in to return to your page.
           </p>
         ) : null}
@@ -30,7 +31,8 @@ function LoginContent() {
       <button
         id="google-sign-in-button"
         onClick={redirectToGoogleLogin}
-        className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-white px-4 py-3 text-sm font-medium text-stone-700 shadow-sm transition-colors hover:bg-stone-50 dark:bg-stone-800 dark:text-stone-200 dark:hover:bg-stone-700"
+        className="flex w-full items-center justify-center gap-3 rounded-2xl border border-border/70 bg-white px-4 py-3.5 text-sm font-semibold text-stone-700 shadow-sm transition-all duration-200 hover:shadow-md hover:scale-[1.01] active:scale-[0.99] dark:bg-stone-800/80 dark:text-stone-200 dark:hover:bg-stone-700/80 animate-fade-in-up"
+        style={{ animationDelay: "0.35s" }}
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
           <path
@@ -53,7 +55,7 @@ function LoginContent() {
         Continue with Google
       </button>
 
-      <p className="mt-6 text-center text-xs text-muted-foreground">
+      <p className="mt-6 text-center text-xs text-muted-foreground animate-fade-in" style={{ animationDelay: "0.45s" }}>
         By signing in you agree to our Terms of Service and Privacy Policy.
       </p>
     </div>
@@ -62,9 +64,8 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="rounded-2xl border border-border bg-card p-8 shadow-sm" />}>
+    <Suspense fallback={<div className="glass-card rounded-3xl border border-border/50 p-8 shadow-2xl h-64 animate-pulse" />}>
       <LoginContent />
     </Suspense>
   );
 }
-

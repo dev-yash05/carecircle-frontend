@@ -85,10 +85,10 @@ export function Sidebar() {
   )
 
   return (
-    <aside className="hidden h-dvh w-[var(--sidebar-width)] shrink-0 flex-col border-r border-border/80 bg-card/85 backdrop-blur lg:flex">
+    <aside className="hidden h-dvh w-[var(--sidebar-width)] shrink-0 flex-col glass-sidebar lg:flex">
       {/* brand */}
-      <div className="flex h-[76px] items-center gap-3 px-5">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-sm">
+      <div className="flex h-[76px] items-center gap-3 px-5 animate-fade-in">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-base font-semibold text-primary-foreground shadow-md transition-transform duration-300 hover:scale-105">
           C
         </div>
         <div>
@@ -97,11 +97,11 @@ export function Sidebar() {
         </div>
       </div>
 
-      <Separator />
+      <Separator className="opacity-50" />
 
       {/* nav links */}
-      <nav className="flex-1 space-y-2 px-3 py-4">
-        {visibleItems.map((item) => {
+      <nav className="flex-1 space-y-1 px-3 py-4">
+        {visibleItems.map((item, i) => {
           const active = item.href === "/superadmin"
             ? pathname === "/superadmin"
             : pathname.startsWith(item.href)
@@ -109,11 +109,14 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              style={{ animationDelay: `${i * 50}ms` }}
               className={cn(
-                "flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-colors [&_svg]:h-5 [&_svg]:w-5 [&_svg]:shrink-0",
+                "flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold",
+                "transition-all duration-200 [&_svg]:h-5 [&_svg]:w-5 [&_svg]:shrink-0",
+                "animate-slide-in-left",
                 active
-                  ? "bg-primary text-primary-foreground shadow-[0_8px_20px_hsl(var(--primary)/0.3)]"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-primary text-primary-foreground shadow-[0_6px_20px_hsl(var(--primary)/0.25)]"
+                  : "text-muted-foreground hover:bg-accent/70 hover:text-accent-foreground hover:translate-x-0.5"
               )}
             >
               {item.icon}
@@ -123,12 +126,12 @@ export function Sidebar() {
         })}
       </nav>
 
-      <Separator />
+      <Separator className="opacity-50" />
 
       {/* user footer */}
       {user && (
-        <div className="m-4 flex items-center gap-3 rounded-2xl border border-border/70 bg-accent/60 p-3">
-          <Avatar className="h-10 w-10">
+        <div className="m-3 flex items-center gap-3 rounded-2xl border border-border/50 bg-accent/40 p-3 backdrop-blur-sm transition-colors duration-200 hover:bg-accent/60">
+          <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
             <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
             <AvatarFallback>
               {user.name?.charAt(0)?.toUpperCase() ?? "?"}
@@ -137,7 +140,7 @@ export function Sidebar() {
           <div className="flex-1 truncate">
             <p className="truncate text-sm font-medium">{user.name}</p>
             <div className="mt-1.5 flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse-soft" aria-hidden="true" />
               <Badge variant="outline" className="text-[10px]">
                 {user.role.replace("_", " ")}
               </Badge>
